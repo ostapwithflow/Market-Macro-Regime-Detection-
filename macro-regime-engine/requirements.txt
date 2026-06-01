@@ -1,0 +1,8 @@
+pandas
+numpy
+fredapi
+scikit-learn
+scipy
+hmmlearn
+requests
+python-dotenv
