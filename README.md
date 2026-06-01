@@ -1,13 +1,16 @@
-# Market-Macro-Regime-Detection-
-Im Ostap 17y.o. From Ukraine. This is my first Project! 
-Macro Regime Engine — Slow Tower (Layer 1)
-Macro-structural market regime classification using Hidden Markov Models and Federal Reserve liquidity data.
+# Macro Regime Engine — Slow Tower (Layer 1)
 
-Classifies the market into three structural regimes — CALM, TRANSITION, STRESS — based on federal liquidity flows and the yield curve, with an anomaly detection gatekeeper for Black Swan protection.
+**Macro-structural market regime classification** using Hidden Markov Models and Federal Reserve liquidity data.
 
-This is the macro layer only (Slow Tower) extracted from the full Regime Engine v3.0 "Quant Village" two-tower system.
+Classifies the market into three structural regimes — **CALM**, **TRANSITION**, **STRESS** — based on federal liquidity flows and the yield curve, with an anomaly detection gatekeeper for Black Swan protection.
 
-Architecture
+> This is the **macro layer only** (Slow Tower) extracted from the full Regime Engine v3.0 "Quant Village" two-tower system.
+
+---
+
+## Architecture
+
+```
 FRED API Data (8 series)
     │
     ▼
@@ -45,24 +48,40 @@ FRED API Data (8 series)
               │  TRANSITION      │
               │  STRESS          │
               └─────────────────┘
-Emission Vector
-Feature	Formula	Description
-L_t	EWMA Z-score of Net Liquidity	Federal liquidity impulse
-S_t	EWMA Z-score of Yield Spread (10Y−3M)	Yield curve shape signal
-Net Liquidity = (Fed Balance Sheet / 1000) − Reverse Repo − TGA
+```
 
-Models
-Gaussian HMM (3 States)
-Full covariance matrix
-7 random restarts (best log-likelihood wins)
-Semantic alignment: 0=CALM, 1=TRANSITION, 2=STRESS (by sum of feature means)
-Tomorrow forecast: P(t+1) = Transition Matrix' × P(t)
-OOD Gatekeeper
-MCD (Minimum Covariance Determinant) — robust covariance estimation
-Mahalanobis distance — χ² threshold at 99.9 percentile
-Cluster OOD — additional Mahalanobis to HMM centroids
-Any OOD detection → automatic override to STRESS
-Project Structure
+---
+
+## Emission Vector
+
+| Feature | Formula | Description |
+|---------|---------|-------------|
+| **L_t** | EWMA Z-score of Net Liquidity | Federal liquidity impulse |
+| **S_t** | EWMA Z-score of Yield Spread (10Y−3M) | Yield curve shape signal |
+
+**Net Liquidity** = (Fed Balance Sheet / 1000) − Reverse Repo − TGA
+
+---
+
+## Models
+
+### Gaussian HMM (3 States)
+- Full covariance matrix
+- 7 random restarts (best log-likelihood wins)
+- Semantic alignment: 0=CALM, 1=TRANSITION, 2=STRESS (by sum of feature means)
+- Tomorrow forecast: `P(t+1) = Transition Matrix' × P(t)`
+
+### OOD Gatekeeper
+- **MCD (Minimum Covariance Determinant)** — robust covariance estimation
+- **Mahalanobis distance** — χ² threshold at 99.9 percentile
+- **Cluster OOD** — additional Mahalanobis to HMM centroids
+- Any OOD detection → automatic override to **STRESS**
+
+---
+
+## Project Structure
+
+```
 macro-regime-engine/
 ├── main.py                    # Live dashboard — entry point
 ├── config.py                  # API keys from env vars + FRED tickers
@@ -80,23 +99,46 @@ macro-regime-engine/
 └── diagnostics/
     ├── collapse_detector.py   # Centroid collapse detection
     └── separability.py        # Cohen's d feature separability
-Quick Start
-1. Clone & Setup
+```
+
+---
+
+## Quick Start
+
+### 1. Clone & Setup
+
+```bash
 git clone https://github.com/YOUR_USERNAME/macro-regime-engine.git
 cd macro-regime-engine
 pip install -r requirements.txt
-2. Configure API Keys
+```
+
+### 2. Configure API Keys
+
+```bash
 cp .env.example .env
 # Edit .env and add your FRED API key
 # Get a free key at: https://fred.stlouisfed.org/docs/api/api_key.html
+```
+
 Or set environment variables directly:
-
+```bash
 export FRED_API_KEY=your_key_here
-3. Run
-python main.py
-Or on Windows: double-click RUN_ENGINE.bat
+```
 
-Output Example
+### 3. Run
+
+```bash
+python main.py
+```
+
+Or on Windows: double-click `RUN_ENGINE.bat`
+
+---
+
+## Output Example
+
+```
 ================================================================================
               MACRO REGIME ENGINE — SLOW TOWER (Layer 1)
 ================================================================================
@@ -116,13 +158,23 @@ Output Example
      TRANS  →    12.1%    82.4%     5.5%
     STRESS  →     1.2%    15.3%    83.5%
 ================================================================================
-FRED Data Series
-Ticker	Description
-WALCL	Fed Total Assets (Millions $)
-RRPONTSYD	Reverse Repo (Billions $)
-WTREGEN	Treasury General Account (Billions $)
-DGS10	10-Year Treasury Yield
-DGS3MO	3-Month Treasury Yield
-DGS2	2-Year Treasury Yield
-BAMLH0A0HYM2	High Yield Spread
-T5YIE	5-Year Breakeven Inflation
+```
+
+---
+
+## FRED Data Series
+
+| Ticker | Description |
+|--------|-------------|
+| `WALCL` | Fed Total Assets (Millions $) |
+| `RRPONTSYD` | Reverse Repo (Billions $) |
+| `WTREGEN` | Treasury General Account (Billions $) |
+| `DGS10` | 10-Year Treasury Yield |
+| `DGS3MO` | 3-Month Treasury Yield |
+| `DGS2` | 2-Year Treasury Yield |
+| `BAMLH0A0HYM2` | High Yield Spread |
+| `T5YIE` | 5-Year Breakeven Inflation |
+
+---
+
+
