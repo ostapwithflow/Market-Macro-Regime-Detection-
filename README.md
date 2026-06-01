@@ -1,4 +1,4 @@
-Macro-structural market regime classification (CALM/TRANSITION/STRESS) using Hidden Markov Models and FRED liquidity data
+# Macro-structural market regime classification (CALM/TRANSITION/STRESS) using Hidden Markov Models and FRED liquidity data
 
 
 # Macro Regime Engine — Slow Tower (Layer 1)
